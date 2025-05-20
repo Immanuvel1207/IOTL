@@ -1,0 +1,49 @@
+int baselineTemp = 40; // You can adjust this
+int celsius = 0;
+int fahrenheit = 0;
+const int buzzer = 9;
+
+void setup() {
+  Serial.begin(9600);
+  
+  pinMode(A0, INPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+}
+
+void loop() {
+  // Reading temperature value from the sensor
+  int sensorValue = analogRead(A0);
+  celsius = map(sensorValue, 0, 1023, 20, 125); // Adjust for your sensor
+  fahrenheit = (celsius * 9 / 5) + 32;
+
+  Serial.print("Temperature: ");
+  Serial.print(celsius);
+  Serial.print(" C, ");
+  Serial.print(fahrenheit);
+  Serial.println(" F");
+
+  // Control LEDs based on temperature
+  if (celsius > baselineTemp) {
+    digitalWrite(2, HIGH); // Red - High temperature
+    digitalWrite(3, LOW);
+    digitalWrite(4, LOW);
+    digitalWrite(buzzer, HIGH);
+    delay(2000);
+    digitalWrite(buzzer, LOW);
+  } 
+  else if (celsius > baselineTemp - 5) {
+    digitalWrite(3, HIGH); // Yellow - Near baseline
+    digitalWrite(2, LOW);
+    digitalWrite(4, LOW);
+  } 
+  else {
+    digitalWrite(4, HIGH); // Green - Safe temperature
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+  }
+
+  delay(1000); // 1-second delay for stable readings
+}
